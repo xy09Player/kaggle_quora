@@ -13,17 +13,30 @@ from tool import specials_c
 from tool import mispell_dict
 
 
+def build_vocab(questions):
+    vocab = set()
+    for question in questions:
+        for word in question.split():
+            vocab.add(word)
+
+
+
 # 预处理
-# 1. 除掉多余空格
-# 2. 缩写词替换
-# 3. 错误词替换
-# 4. 分词
-# 注： 保留大小写
+
+## 小写
+
+## 缩写替换
+
+## 标点切割
+
 def pre_data(sentence_list):
 
     result = []
     for i in sentence_list:
         i = re.sub(r'\s+', ' ', i)
+
+        # 小写
+        i = i.lower()
 
         # 缩写词替换
         for s in specials_d:
@@ -76,6 +89,16 @@ def build_word_embedding(questions, glove_file):
     def get_matrixs(word, *nums):
         return word, np.asarray(nums, dtype='float32')
     embedding_dict = dict([get_matrixs(*o.split(' ')) for o in open(glove_file, 'r')])
+
+    # 小写化字典
+    embedding_dict_tmp = {}
+    for word in embedding_dict.keys():
+        if word.lower() in embedding_dict:
+            embedding_dict_tmp[word.lower()] = embedding_dict[word.lower()]
+        else:
+            embedding_dict_tmp[word.lower()] = embedding_dict[word]
+    print('lower embedding_dict: %d/%d' % (len(embedding_dict_tmp), len(embedding_dict)))
+    embedding_dict = embedding_dict_tmp
 
     # 初始化词表
     vocab = {}

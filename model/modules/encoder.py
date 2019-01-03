@@ -5,6 +5,9 @@
 import torch
 from torch import nn
 
+import keras
+
+keras.layers.Conv2D
 
 class Rnn(nn.Module):
 
